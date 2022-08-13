@@ -15,3 +15,7 @@ output "rds_username" {
   value       = aws_db_instance.rds-mysql.username
   sensitive   = true
 }
+
+output "rds_endpoint" {
+  value = aws_db_instance.rds-mysql.endpoint
+}

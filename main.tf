@@ -41,3 +41,11 @@ module "rds" {
   engine_version = var.engine_version
 
 }
+
+module "asm" {
+  depends_on = [module.vpc,module.sg]
+  source = "./module/asm"
+  lambda_sg = module.sg.lambda_sg
+  rds_endpoint = module.rds.rds_endpoint
+  subnet_ids = data.aws_subnets.private.ids
+}

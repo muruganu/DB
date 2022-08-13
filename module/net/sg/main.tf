@@ -55,3 +55,30 @@ resource "aws_security_group" "rds_sg" {
     Name = "Rds SG"
   }
 }
+
+# Security group: allow only specific egress and deny all ingress.
+resource "aws_security_group" "lambda_sg" {
+  name   = "lambda_sg"
+  vpc_id = var.vpc_id
+  egress {
+    description = "Secrets Manager via VPC endpoint"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/8"]
+  }
+  egress {
+    description = "MySQL password rotation"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/8"]
+  }
+  egress {
+    description = "RDS API via proxy"
+    from_port   = 18080
+    to_port     = 18080
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/8"]
+  }
+}
