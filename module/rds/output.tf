@@ -19,3 +19,19 @@ output "rds_username" {
 output "rds_endpoint" {
   value = aws_db_instance.rds-mysql.endpoint
 }
+
+output "db_identifier" {
+  value = aws_db_instance.rds-mysql.identifier
+}
+
+output "dbname" {
+  value = aws_db_instance.rds-mysql.db_name
+}
+
+output "db_username" {
+  value = local.db_creds.username
+}
+
+output "db_pass" {
+  value = local.db_creds.password
+}

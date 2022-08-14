@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "lambda-policy" {
       "secretsmanager:GetSecretValue",
       "secretsmanager:PutSecretValue",
       "secretsmanager:UpdateSecretVersionStage",
+      "secretsmanager:GetRandomPassword",
     ]
     resources = ["*"]
   }

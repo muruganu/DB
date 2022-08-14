@@ -17,4 +17,12 @@ output "public_sg" {
   value = module.sg.public_sg
 }
 
+output "db_username" {
+  value = module.rds.rds_username
+  sensitive = true
+}
 
+output "db_pass" {
+  value = module.rds.db_pass
+  sensitive = true
+}

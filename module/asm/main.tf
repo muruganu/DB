@@ -61,10 +61,13 @@ resource "aws_secretsmanager_secret_version" "mysql-password" {
   ]
   secret_id = aws_secretsmanager_secret.mysql-password.id
   secret_string = jsonencode({
-    username = "foo"
-    password = "foobarbaz"
+    username = var.dbusername
+    password = var.dbpass
     engine = "mysql"
     host = var.rds_endpoint
+    port = 3306
+    dbname = var.dbname
+    dbInstanceIdentifier = var.dbidentifier
   })
 
 }
@@ -82,9 +85,12 @@ resource "aws_secretsmanager_secret_rotation" "mysql-password" {
 # The PRL is async, so IPR happens in the background. The resource that
 # creates RDS instances should depend on this resource so that the instances
 # start creating 20s after IPR was started.
-resource "time_sleep" "wait-for-password-rotation" {
-  depends_on = [
-    aws_secretsmanager_secret_rotation.mysql-password,
-  ]
-  create_duration = "20s"
+
+resource "aws_vpc_endpoint" "asm-ep" {
+  vpc_id       = "${var.vpc_id}"
+  service_name = "com.amazonaws.us-west-2.secretsmanager"
+  vpc_endpoint_type = "Interface"
+  subnet_ids = var.subnet_ids
+  security_group_ids = [var.asm_ep_sg]
+  private_dns_enabled = true
 }

@@ -34,6 +34,7 @@ data "aws_subnets" "public" {
 }
 
 module "rds" {
+  depends_on = [module.vpc,module.sg]
   source = "./module/rds"
   rds_subnet = data.aws_subnets.private.ids
   rds_sg = module.sg.rds_sg
@@ -43,9 +44,15 @@ module "rds" {
 }
 
 module "asm" {
-  depends_on = [module.vpc,module.sg]
+  depends_on = [module.vpc,module.sg,module.rds]
   source = "./module/asm"
   lambda_sg = module.sg.lambda_sg
-  rds_endpoint = module.rds.rds_endpoint
+  rds_endpoint = module.rds.rds_hostname
   subnet_ids = data.aws_subnets.private.ids
+  asm_ep_sg = module.sg.asm_ep_sg
+  vpc_id = module.vpc.vpc_id
+  dbname = module.rds.dbname
+  dbidentifier = module.rds.db_identifier
+  dbusername = module.rds.db_username
+  dbpass = module.rds.db_pass
 }
